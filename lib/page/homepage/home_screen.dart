@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:habitualize/page/homepage/component_homescreen/habit_routine.dart';
 import 'package:habitualize/page/homepage/component_homescreen/profile_section.dart';
 import 'package:habitualize/page/homepage/component_homescreen/mood_tracker.dart';
+import 'package:habitualize/page/routine/morning_routine_page.dart';
+import 'package:habitualize/page/routine/daily_routine_page.dart';
+import 'package:habitualize/page/routine/evening_routine_page.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -33,6 +36,155 @@ class _HabitualizeHomeState extends State<HabitualizeHome> {
       statusBarColor: Colors.transparent,
       statusBarIconBrightness: Brightness.dark,
     ));
+  }
+
+  void _navigateToRoutine(String routineType, List<String> habits) {
+    // Create page transition animation
+    Navigator.of(context).push(
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) {
+          // Use specific page for morning routine
+          if (routineType == 'Morning') {
+            return MorningRoutinePage(
+              habits: habits,
+            );
+          }
+
+          // Use specific page for daily routine
+          if (routineType == 'Daily') {
+            return DailyRoutinePage(
+              habits: habits,
+            );
+          }
+
+          // Use specific page for evening routine
+          if (routineType == 'Evening') {
+            return EveningRoutinePage(
+              habits: habits,
+            );
+          }
+
+          // Default to morning routine if type is unknown
+          return MorningRoutinePage(
+            habits: habits,
+          );
+        },
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          const begin = Offset(1.0, 0.0);
+          const end = Offset.zero;
+          const curve = Curves.easeInOut;
+
+          var tween = Tween(begin: begin, end: end).chain(
+            CurveTween(curve: curve),
+          );
+
+          return SlideTransition(
+            position: animation.drive(tween),
+            child: child,
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildRoutineButton({
+    required String title,
+    required String routineType,
+    required List<String> habits,
+    required Color color,
+    required IconData icon,
+    required double scaleFactor,
+  }) {
+    return GestureDetector(
+      onTap: () {
+        HapticFeedback.mediumImpact();
+        _navigateToRoutine(routineType, habits);
+      },
+      child: Container(
+        margin: EdgeInsets.symmetric(vertical: 8 * scaleFactor),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              color.withOpacity(0.8),
+              color,
+            ],
+          ),
+          borderRadius: BorderRadius.circular(16 * scaleFactor),
+          boxShadow: [
+            BoxShadow(
+              color: color.withOpacity(0.3),
+              blurRadius: 8 * scaleFactor,
+              offset: Offset(0, 4 * scaleFactor),
+            ),
+          ],
+        ),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(16 * scaleFactor),
+            onTap: () {
+              HapticFeedback.mediumImpact();
+              _navigateToRoutine(routineType, habits);
+            },
+            child: Padding(
+              padding: EdgeInsets.all(16 * scaleFactor),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    padding: EdgeInsets.all(12 * scaleFactor),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(12 * scaleFactor),
+                    ),
+                    child: Icon(
+                      icon,
+                      color: Colors.white,
+                      size: 24 * scaleFactor,
+                    ),
+                  ),
+                  SizedBox(width: 16 * scaleFactor),
+                  Expanded(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          title,
+                          style: GoogleFonts.workSans(
+                            fontSize: 18 * scaleFactor,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        SizedBox(height: 4 * scaleFactor),
+                        Text(
+                          '${habits.length} habits',
+                          style: GoogleFonts.workSans(
+                            fontSize: 14 * scaleFactor,
+                            color: Colors.white.withOpacity(0.8),
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(width: 8 * scaleFactor),
+                  Icon(
+                    Icons.arrow_forward_ios,
+                    color: Colors.white,
+                    size: 16 * scaleFactor,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   @override
@@ -183,22 +335,29 @@ class _HabitualizeHomeState extends State<HabitualizeHome> {
                       EdgeInsets.symmetric(horizontal: horizontalPadding * 0.8),
                   sliver: SliverList(
                     delegate: SliverChildListDelegate([
-                      RoutineSection(
+                      _buildRoutineButton(
                         title: "Morning Routine",
                         routineType: "Morning",
-                        defaultHabits: morningHabits,
+                        habits: morningHabits,
+                        color: const Color(0xFFFF7043),
+                        icon: Icons.wb_sunny,
+                        scaleFactor: scaleFactor,
                       ),
-                      SizedBox(height: sectionSpacing),
-                      RoutineSection(
+                      _buildRoutineButton(
                         title: "Daily Routine",
                         routineType: "Daily",
-                        defaultHabits: dailyHabits,
+                        habits: dailyHabits,
+                        color: const Color(0xFF00ACC1),
+                        icon: Icons.access_time,
+                        scaleFactor: scaleFactor,
                       ),
-                      SizedBox(height: sectionSpacing),
-                      RoutineSection(
+                      _buildRoutineButton(
                         title: "Evening Routine",
                         routineType: "Evening",
-                        defaultHabits: eveningHabits,
+                        habits: eveningHabits,
+                        color: const Color(0xFF3949AB),
+                        icon: Icons.nightlight_round,
+                        scaleFactor: scaleFactor,
                       ),
                       SizedBox(height: sectionSpacing),
                       const MoodTracker(),

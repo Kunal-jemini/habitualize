@@ -67,6 +67,12 @@ flutter:
     - assets/images/yoga.jpg
     - assets/images/meal.jpeg
     - assets/images/reading.jpg
+    - assets/images/meditation.jpg
+    - assets/images/sleep.jpg
+    - assets/images/morning.png
+    - assets/images/evening.png
+    - assets/images/daily.png
+    - assets/images/default.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
