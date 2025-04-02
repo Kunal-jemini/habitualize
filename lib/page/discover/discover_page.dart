@@ -247,7 +247,7 @@ class _DiscoverPageState extends State<DiscoverPage>
                     ),
                   ),
                 ),
-
+/* 
                 // Popular This Week
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
@@ -296,7 +296,7 @@ class _DiscoverPageState extends State<DiscoverPage>
                         '3 meals daily',
                         '4.6',
                         const Color(0xFF66BB6A),
-                        'assets/images/meal.jpg',
+                        'assets/images/meal.jpeg',
                       ),
                       _buildDiscoveryCard(
                         'Reading Habit',
@@ -307,7 +307,7 @@ class _DiscoverPageState extends State<DiscoverPage>
                       ),
                     ],
                   ),
-                ),
+                ), */
               ],
             ),
           ),
@@ -826,7 +826,7 @@ class _DiscoverPageState extends State<DiscoverPage>
   ) {
     return Container(
       width: 180,
-      height: 220,
+      height: 300,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
@@ -846,12 +846,12 @@ class _DiscoverPageState extends State<DiscoverPage>
           mainAxisSize: MainAxisSize.min,
           children: [
             SizedBox(
-              height: 120,
+              height: 100,
               child: Stack(
                 children: [
                   Image.asset(
                     imagePath,
-                    height: 120,
+                    height: 130,
                     width: double.infinity,
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) {
